@@ -3,7 +3,7 @@ function buildMetadata(sample) {
   // @TODO: Complete the following function that builds the metadata panel
 
   // Use `d3.json` to fetch the metadata for a sample
-  var url = "/metadata/${sample}";
+  var url = `/metadata/${sample}`;
     // Use d3 to select the panel with id of `#sample-metadata`
   var submit = d3.select("#sample-metadata");
 
@@ -16,7 +16,7 @@ function buildMetadata(sample) {
     // tags for each key-value in the metadata.
   d3.json(url).then(function(data) {
     Object.entries(data).forEach(([key, value]) => {
-      submit.append("h6").text('${key}: ${value}')
+      submit.append("h6").text(`${key}: ${value}`)
     });
   });
 };
@@ -24,47 +24,48 @@ function buildMetadata(sample) {
 function buildCharts(sample) {
 
   // @TODO: Use `d3.json` to fetch the sample data for the plots
-  var chartUrl = "/samples/${sample}";
+  var chartUrl = `/samples/${sample}`;
   d3.json(chartUrl).then(function(data) {
     // @TODO: Build a Bubble Chart using the sample data
   var trace1 = {
   x: data.otu_ids,
   y: data.sample_values,
   text: data.otu_labels,
-  mode: 'markers',
+  mode: "markers",
+  type: "bubble",
   marker: {
     color: data.otu_ids,
     size: data.sample_values,
+    colorscale: "Earth"
   }
 };
-
-var data = [trace1];
-
+var trace1 = [trace1];
 var layout = {
-  title: 'OTU ID',
+  margin: {t:0},
+  hovermode: "closest",
+  xaxis: {title: 'OTU ID'},
   showlegend: false,
-  height: 600,
-  width: 600
 };
 
-Plotly.newPlot('myDiv', data, layout);
+Plotly.newPlot("bubble", trace1, layout);
 
     // @TODO: Build a Pie Chart
     // HINT: You will need to use slice() to grab the top 10 sample_values,
     // otu_ids, and labels (10 each).
-var data = [{
+var PAY = [{
     values: data.sample_values.slice(0, 10),
-    labels: data.otu_labels.slice(0, 10),
+    labels: data.otu_ids.slice(0, 10),
     hovertext: data.otu_labels.slice(0, 10),
     type: "pie"
   }];
 
   var layout = {
     height: 600,
-    width: 800
+    width: 800,
+    showlegend: true
   };
 
-  Plotly.plot("pie", data, layout);
+  Plotly.newPlot("pie", PAY, layout);
 
   });  
 };
